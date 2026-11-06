@@ -41,16 +41,41 @@
             font-family: inherit;
             font-size: 14px;
         }
+        #parsed {
+            margin-top: 12px;
+            background: #1c1c1c;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 4px 12px;
+            font-family: monospace;
+            font-size: 13px;
+            direction: ltr;
+        }
+        #parsed:empty {
+            display: none;
+        }
+        .row {
+            padding: 8px 0;
+            border-bottom: 1px solid #2a2a2a;
+            word-break: break-all;
+        }
+        .row:last-child {
+            border-bottom: 0;
+        }
+        .key {
+            color: #6cb6ff;
+        }
     </style>
 </head>
 <body>
-    <h1>Telegram MiniApp initData</h1>
+    <h1>test miniapp</h1>
     <p>
         مقدار <code>initData</code> که تلگرام موقع باز شدن مینی‌اپ می‌فرسته
         اینجا نمایش داده می‌شه. سرور با این مقدار می‌تونه هویت کاربر رو تأیید کنه.
     </p>
 
     <div id="data"></div>
+    <div id="parsed"></div>
 
     <script>
         const tg = window.Telegram.WebApp;
@@ -60,6 +85,23 @@
 
         if (tg.initData) {
             box.textContent = tg.initData;
+
+            // initData یه query string هست؛ جدا جدا نشونش می‌دیم
+            const parsed = document.getElementById('parsed');
+            new URLSearchParams(tg.initData).forEach((value, key) => {
+                const row = document.createElement('div');
+                row.className = 'row';
+
+                const k = document.createElement('span');
+                k.className = 'key';
+                k.textContent = key + ': ';
+
+                const v = document.createElement('span');
+                v.textContent = value;
+
+                row.append(k, v);
+                parsed.append(row);
+            });
         } else {
             box.textContent = 'این اپ توی ربات باز نشده';
             box.classList.add('error');
